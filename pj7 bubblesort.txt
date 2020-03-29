@@ -1,0 +1,119 @@
+
+        .global BubbleSort
+	.global While1
+	.global While2
+	.global WhileEnd1
+	.global WhileEnd2
+	.global IfEnd
+	
+
+
+BubbleSort:
+//*****************************************************
+// Write your bubble sort assembler subroutine here
+//
+//    BubbleSort: input  r0 = address of int array
+//                       r1 = # elements in the array
+//*****************************************************
+
+
+
+        // Write your bubble sort function here.....
+	// Make sure you RETURN to the caller !!!
+
+//Done = 0
+	movw r2, #:lower16:Done
+	movt r2, #:upper16:Done
+
+	ldr r2, [r2]
+
+//k = 1
+	movw r3, #:lower16:k
+	movt r3, #:upper16:k
+	
+	ldr r3, [r3]
+//while (Done == 0)
+While1:	
+	cmp r2, #0
+	bne While1End
+	//Done = 1
+	mov r2, #1
+
+	//int N is in r1
+	movw r4, #:lower16: NminusK
+	movt r4, #:upper16: NminusK
+	//N-k value 
+	sub r4, r1, r3
+	//i value
+	movw r5, #:lower16: i
+	movt r5, #:upper16: i
+	mov r5, #0
+While2:
+
+	cmp  r5, r4
+
+	bge While2End
+	//make i fit for the array in int	
+	//use r9 to store the value of r5 * 4, which is i * 4
+	add  r9, r5, r5 
+	add  r9, r9, r9
+	
+	//r6 stores A[i]
+	ldr r6, [r0, r9]
+	//r7 stores i + 1
+	add r7, r9, #4
+	//r8 stores A[i+1]
+	ldr r8, [r0, r7]
+	//see if A[i] < A[i+1]
+	cmp r6, r8
+	ble IfEnd
+	
+
+//Save this code here:
+	//Help = A[i];
+	//A[i] = A[i+1];
+	str r8, [r0, r9]
+	//A[i+1] = Help;
+	str r6, [r0, r7]
+	
+//Everything else should be fine
+	
+	//Done = 0
+	mov r2, #0
+	
+IfEnd:	
+	add r5, r5, #1
+	b While2
+
+While2End:
+	//k = k + 1	
+	add r3, r3, #1
+	b While1
+
+While1End:
+	//return to main method
+	mov pc, lr 
+
+
+// *************************************************************************
+// If you need local variables, you can define them below this line
+// *************************************************************************
+
+
+	.data
+
+DataStart:
+
+Done:   	.4byte 0
+k:      	.4byte 1
+i: 		.4byte 0
+NminusK: 	.4byte 0
+Help: 		.4byte 0
+
+
+// ********************************************************************
+// Don't touch the arrays A and B below
+// ********************************************************************
+
+DataEnd:
+	.end
